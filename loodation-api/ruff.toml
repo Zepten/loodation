@@ -1,0 +1,24 @@
+line-length = 88
+
+[lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+ignore = [
+    "E501",  # line too long
+    # "B008",  # do not perform function calls in argument defaults
+    # "C901",  # complexity
+]
+fixable = ["A", "B", "C", "D", "E", "F", "I"]
+unfixable = [
+    "F401" # remove unused imports
+]
+
+[format]
+quote-style = "double"
+exclude = []

@@ -1,0 +1,27 @@
+fail_fast: false
+
+default_language_version:
+  python: python3.13
+
+repos:
+  # Linting and formatting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.7
+    hooks:
+      # Run the linter
+      - id: ruff-check
+        types_or: [ python, pyi ]
+        args: [ --fix ]
+      # Run the formatter
+      - id: ruff-format
+        types_or: [ python, pyi ]
+
+  # Testing
+  # - repo: local
+  #   hooks:
+  #     - id: tests
+  #       name: run tests
+  #       entry: pytest -v
+  #       language: system
+  #       types: [ python ]
+  #       stages: [ pre-push ]

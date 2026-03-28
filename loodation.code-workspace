@@ -1,0 +1,86 @@
+{
+	"folders": [
+		{
+			"name": "root",
+			"path": ".",
+		},
+		{
+			"name": "loodation-api",
+			"path": "./loodation-api",
+		},
+		{
+			"name": "loodation-miniapp",
+			"path": "./loodation-miniapp",
+		},
+	],
+	"settings": {
+		// Don't show files in workspace
+		"files.exclude": {
+			"**/__pycache__/": true,
+			"**/.ruff_cache/": true,
+			"**/.pytest_cache/": true,
+			"**/node_modules/": true,
+		},
+
+		// Editor
+		"editor.fontSize": 18,
+		"terminal.integrated.fontSize": 16,
+		"window.zoomLevel": 1,
+		"explorer.autoReveal": false,
+		"editor.rulers": [88],
+		"workbench.editor.wrapTabs": true,
+
+		// Python
+		"python.terminal.useEnvFile": true,
+		"python.terminal.activateEnvInCurrentTerminal": true,
+		"python-envs.workspaceSearchPaths": ["${workspaceFolder:loodation-api}"],
+		"python.analysis.extraPaths": ["${workspaceFolder:loodation-api}"],
+		"[python]": {
+			"editor.defaultFormatter": "charliermarsh.ruff",
+			"editor.formatOnSave": true,
+			"editor.codeActionsOnSave": {
+				"source.fixAll": "explicit",
+				"source.organizeImports": "explicit",
+			},
+			// "python.analysis.inlayHints.variableTypes": true,
+			// "python.analysis.inlayHints.functionReturnTypes": true,
+		},
+
+		// Ruff
+		"ruff.nativeServer": true,
+
+		// JS
+		"[javascript]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode",
+		},
+		"[typescript]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode",
+		},
+
+		// Conventional Commits
+		"conventionalCommits.scopes": [
+			"api",
+			"auth",
+			"config",
+			"deps",
+			"tests",
+			"docs",
+			"build",
+		],
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-python.python",
+			"ms-python.vscode-pylance",
+			"charliermarsh.ruff",
+			"esbenp.prettier-vscode",
+			"tamasfe.even-better-toml",
+			"mikestead.dotenv",
+			"ahmadalli.vscode-nginx-conf",
+			"redis.redis-for-vscode",
+			"vivaxy.vscode-conventional-commits",
+			"eamodio.gitlens",
+			"github.vscode-github-actions",
+		],
+	},
+}

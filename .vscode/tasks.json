@@ -1,0 +1,76 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Alembic: Generate revision (auto)",
+			"type": "shell",
+			"command": "uv",
+			"args": [
+				"run",
+				"--env-file",
+				"${workspaceFolder:root}/.env",
+				"alembic",
+				"revision",
+				"--autogenerate"
+			],
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder:loodation-api}"
+			},
+			"problemMatcher": []
+		},
+    {
+			"label": "Alembic: Generate revision (empty)",
+			"type": "shell",
+			"command": "uv",
+			"args": [
+				"run",
+				"--env-file",
+				"${workspaceFolder:root}/.env",
+				"alembic",
+				"revision",
+			],
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder:loodation-api}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Alembic: Upgrade to head (latest)",
+			"type": "shell",
+			"command": "uv",
+			"args": [
+				"run",
+				"--env-file",
+				"${workspaceFolder:root}/.env",
+				"alembic",
+				"upgrade",
+				"head"
+			],
+			"options": {
+				"cwd": "${workspaceFolder:loodation-api}"
+			},
+			"group": "build",
+			"problemMatcher": []
+		},
+    {
+			"label": "Alembic: Downgrade",
+			"type": "shell",
+			"command": "uv",
+			"args": [
+				"run",
+				"--env-file",
+				"${workspaceFolder:root}/.env",
+				"alembic",
+				"downgrade",
+				"-1"
+			],
+			"options": {
+				"cwd": "${workspaceFolder:loodation-api}"
+			},
+			"group": "build",
+			"problemMatcher": []
+		}
+	]
+}

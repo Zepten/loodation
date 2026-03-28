@@ -1,0 +1,91 @@
+name: loodation
+
+volumes:
+  db-data:
+  redis-data:
+
+services:
+  devcontainer:
+    build: .devcontainer
+    volumes:
+      - .:/workspaces/loodation:cached
+    command: sleep infinity
+
+  db:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=${DB__NAME:?error}
+      - POSTGRES_USER=${DB__USERNAME:?error}
+      - POSTGRES_PASSWORD=${DB__PASSWORD:?error}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  redis:
+    image: redis:8.6-alpine
+    # environment:
+    #   - REDIS_PASSWORD=${REDIS__PASSWORD:?error}
+    #   - REDIS_USER=${REDIS__USERNAME:?error}
+    #   - REDIS_USER_PASSWORD=${REDIS__PASSWORD:?error}
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS__PASSWORD}", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # api:
+  #   build:
+  #     context: ./loodation-api
+  #     dockerfile: ./docker/Dockerfile
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   environment:
+  #     - DB__USERNAME=${DB_USERNAME:?error}
+  #     - DB__PASSWORD=${DB_PASSWORD:?error}
+  #     - DB__PATH=${DB_PATH:?error}
+  #     - DB__HOST=postgres-service
+  #     - DB__PORT=5432
+  #     - DB__ECHO=${DB_ECHO:?error}
+  #     - DB__ECHO_POOL=${DB_ECHO_POOL:?error}
+  #     - DB__POOL_SIZE=${DB_POOL_SIZE:?error}
+  #     - DB__MAX_OVERFLOW=${DB_MAX_OVERFLOW:?error}
+  #     - RUN__HOST=0.0.0.0
+  #     - RUN__PORT=8080
+  #   volumes:
+  #     - ./loodation-api:/src
+  #   ports:
+  #     - 8080:8080
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8080/api/health/"]
+  #     interval: 5s
+  #     timeout: 5s
+  #   restart: unless-stopped
