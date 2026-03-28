@@ -7,6 +7,7 @@ uv sync --project ./loodation-api
 echo "⏳ Setting up pre-commit hooks..."
 uv run --project ./loodation-api pre-commit install
 uv run --project ./loodation-api pre-commit install -t pre-commit
+uv run --project ./loodation-api pre-commit install -t pre-push
 
 echo "⏳ Finalizing environment configuration..."
 chmod +x ./loodation-api/.venv/bin/activate*
