@@ -22,9 +22,8 @@ repos:
       # Run the type checker
       - id: type checker
         name: run type checker
-        entry: ty
+        entry: uv run ty check
         language: system
-        args: [ check ]
         types_or: [ python, pyi ]
       # Run tests
       # - id: tests
