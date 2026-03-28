@@ -66,6 +66,7 @@
 			"tests",
 			"docs",
 			"build",
+			"dev"
 		],
 	},
 	"extensions": {
