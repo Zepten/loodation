@@ -34,7 +34,6 @@
 		"python.terminal.useEnvFile": true,
 		"python.terminal.activateEnvInCurrentTerminal": true,
 		"python-envs.workspaceSearchPaths": ["${workspaceFolder:loodation-api}"],
-		"python.analysis.extraPaths": ["${workspaceFolder:loodation-api}"],
 		"[python]": {
 			"editor.defaultFormatter": "charliermarsh.ruff",
 			"editor.formatOnSave": true,
