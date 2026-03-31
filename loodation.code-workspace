@@ -67,7 +67,8 @@
 			"tests",
 			"docs",
 			"build",
-			"dev"
+			"dev",
+			"alembic"
 		],
 	},
 	"extensions": {
