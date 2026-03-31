@@ -44,6 +44,8 @@
 			// "python.analysis.inlayHints.variableTypes": true,
 			// "python.analysis.inlayHints.functionReturnTypes": true,
 		},
+		"python.languageServer": "Pylance",
+		"ty.disableLanguageServices": true,
 
 		// Ruff
 		"ruff.nativeServer": true,
@@ -71,6 +73,7 @@
 	"extensions": {
 		"recommendations": [
 			"ms-python.python",
+			"ms-python.vscode-pylance",
 			"astral-sh.ty",
 			"charliermarsh.ruff",
 			"esbenp.prettier-vscode",
