@@ -8,31 +8,31 @@
 			"args": [
 				"run",
 				"--env-file",
-				"${workspaceFolder:root}/.env",
+				"${workspaceFolder:loodation}/.env",
 				"alembic",
 				"revision",
 				"--autogenerate"
 			],
 			"group": "build",
 			"options": {
-				"cwd": "${workspaceFolder:loodation-api}"
+				"cwd": "${workspaceFolder:loodation}/loodation-api"
 			},
 			"problemMatcher": []
 		},
-    {
+    	{
 			"label": "Alembic: Generate revision (empty)",
 			"type": "shell",
 			"command": "uv",
 			"args": [
 				"run",
 				"--env-file",
-				"${workspaceFolder:root}/.env",
+				"${workspaceFolder:loodation}/.env",
 				"alembic",
 				"revision",
 			],
 			"group": "build",
 			"options": {
-				"cwd": "${workspaceFolder:loodation-api}"
+				"cwd": "${workspaceFolder:loodation}/loodation-api"
 			},
 			"problemMatcher": []
 		},
@@ -43,31 +43,31 @@
 			"args": [
 				"run",
 				"--env-file",
-				"${workspaceFolder:root}/.env",
+				"${workspaceFolder:loodation}/.env",
 				"alembic",
 				"upgrade",
 				"head"
 			],
 			"options": {
-				"cwd": "${workspaceFolder:loodation-api}"
+				"cwd": "${workspaceFolder:loodation}/loodation-api"
 			},
 			"group": "build",
 			"problemMatcher": []
 		},
-    {
+    	{
 			"label": "Alembic: Downgrade",
 			"type": "shell",
 			"command": "uv",
 			"args": [
 				"run",
 				"--env-file",
-				"${workspaceFolder:root}/.env",
+				"${workspaceFolder:loodation}/.env",
 				"alembic",
 				"downgrade",
 				"-1"
 			],
 			"options": {
-				"cwd": "${workspaceFolder:loodation-api}"
+				"cwd": "${workspaceFolder:loodation}/loodation-api"
 			},
 			"group": "build",
 			"problemMatcher": []

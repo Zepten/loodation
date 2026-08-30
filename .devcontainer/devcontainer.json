@@ -2,12 +2,25 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/alpine
 {
 	"name": "loodation-dev",
+	"runArgs": ["--name", "loodation-dev", "--network", "loodation-network"],
 	"workspaceFolder": "/workspaces/loodation",
-	"dockerComposeFile": "../compose.yaml",
-	"service": "devcontainer",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"version": "latest"
+		}
+	},
+	"mounts": [
+		"source=loodation-api-venv,target=/workspaces/loodation/loodation-api/.venv,type=volume"
+	],
+	"postCreateCommand": "chmod +x ./scripts/* && ./scripts/setup-dev-env.sh",
+	"remoteUser": "vscode",
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"ms-azuretools.vscode-docker",
 				"ms-python.python",
 				"ms-python.vscode-pylance",
 				"astral-sh.ty",
@@ -19,18 +32,9 @@
 				"redis.redis-for-vscode",
 				"vivaxy.vscode-conventional-commits",
 				"eamodio.gitlens",
-				"github.vscode-github-actions"
+				"github.vscode-github-actions",
+				"gruntfuggly.todo-tree"
 			]
 		}
-	},
-	"postCreateCommand": "chmod +x ./.devcontainer/install.sh && ./.devcontainer/install.sh"
-
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+	}
 }

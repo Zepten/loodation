@@ -4,13 +4,11 @@ volumes:
   db-data:
   redis-data:
 
-services:
-  devcontainer:
-    build: .devcontainer
-    volumes:
-      - .:/workspaces/loodation:cached
-    command: sleep infinity
+networks:
+  loodation-network:
+    name: loodation-network
 
+services:
   db:
     image: postgres:18-alpine
     environment:
@@ -18,7 +16,7 @@ services:
       - POSTGRES_USER=${DB__USERNAME:?error}
       - POSTGRES_PASSWORD=${DB__PASSWORD:?error}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:${DB__PORT}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
@@ -31,6 +29,8 @@ services:
         limits:
           cpus: '1'
           memory: 1G
+    networks:
+      - loodation-network
 
   redis:
     image: redis:8.6-alpine
@@ -39,7 +39,7 @@ services:
     #   - REDIS_USER=${REDIS__USERNAME:?error}
     #   - REDIS_USER_PASSWORD=${REDIS__PASSWORD:?error}
     ports:
-      - "6380:6379"
+      - "127.0.0.1:${REDIS__PORT}:6379"
     volumes:
       - redis-data:/data
       - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
@@ -60,32 +60,57 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
+    networks:
+      - loodation-network
 
-  # api:
-  #   build:
-  #     context: ./loodation-api
-  #     dockerfile: ./docker/Dockerfile
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #   environment:
-  #     - DB__USERNAME=${DB_USERNAME:?error}
-  #     - DB__PASSWORD=${DB_PASSWORD:?error}
-  #     - DB__PATH=${DB_PATH:?error}
-  #     - DB__HOST=postgres-service
-  #     - DB__PORT=5432
-  #     - DB__ECHO=${DB_ECHO:?error}
-  #     - DB__ECHO_POOL=${DB_ECHO_POOL:?error}
-  #     - DB__POOL_SIZE=${DB_POOL_SIZE:?error}
-  #     - DB__MAX_OVERFLOW=${DB_MAX_OVERFLOW:?error}
-  #     - RUN__HOST=0.0.0.0
-  #     - RUN__PORT=8080
-  #   volumes:
-  #     - ./loodation-api:/src
-  #   ports:
-  #     - 8080:8080
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8080/api/health/"]
-  #     interval: 5s
-  #     timeout: 5s
-  #   restart: unless-stopped
+  api:
+    build:
+      context: ./loodation-api
+      dockerfile: ./docker/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - UV_PROJECT_ENVIRONMENT=/opt/venv
+      - ENVIRONMENT=${ENVIRONMENT:?error}
+      - LOGGING__LEVEL=${LOGGING__LEVEL:?error}
+      - DB__HOST=${DB__HOST:?error}
+      - DB__PORT=${DB__PORT:?error}
+      - DB__USERNAME=${DB__USERNAME:?error}
+      - DB__PASSWORD=${DB__PASSWORD:?error}
+      - DB__NAME=${DB__NAME:?error}
+      - DB__ECHO=${DB__ECHO:?error}
+      - DB__ECHO_POOL=${DB__ECHO_POOL:?error}
+      - DB__POOL_SIZE=${DB__POOL_SIZE:?error}
+      - DB__MAX_OVERFLOW=${DB__MAX_OVERFLOW:?error}
+      - DB__POOL_PRE_PING=${DB__POOL_PRE_PING:?error}
+      - REDIS__HOST=${REDIS__HOST:?error}
+      - REDIS__PORT=${REDIS__PORT:?error}
+      - REDIS__USERNAME=${REDIS__USERNAME:?error}
+      - REDIS__PASSWORD=${REDIS__PASSWORD:?error}
+      - REDIS__DB=${REDIS__DB:?error}
+      - TELEGRAM_MINIAPP__HOST=${TELEGRAM_MINIAPP__HOST:?error}
+      - TELEGRAM_MINIAPP__PORT=${TELEGRAM_MINIAPP__PORT:?error}
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./loodation-api
+    #       target: /app/src
+    #       ignore:
+    #         - "**/__pycache__/**"
+    #         - "**/.venv/**"
+    #     - action: rebuild
+    #       path: ./loodation-api/docker
+    ports:
+      - "127.0.0.1:${API__PORT}:8000"
+      - "127.0.0.1:${API__DEBUG_PORT}:8001"
+    volumes:
+      - ./loodation-api/src:/app/src
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/healthcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - loodation-network

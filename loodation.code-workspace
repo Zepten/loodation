@@ -1,17 +1,9 @@
 {
 	"folders": [
 		{
-			"name": "root",
+			"name": "loodation",
 			"path": ".",
-		},
-		{
-			"name": "loodation-api",
-			"path": "./loodation-api",
-		},
-		{
-			"name": "loodation-miniapp",
-			"path": "./loodation-miniapp",
-		},
+		}
 	],
 	"settings": {
 		// Don't show files in workspace
@@ -73,6 +65,7 @@
 	},
 	"extensions": {
 		"recommendations": [
+			"ms-azuretools.vscode-docker",
 			"ms-python.python",
 			"ms-python.vscode-pylance",
 			"astral-sh.ty",
@@ -85,6 +78,7 @@
 			"vivaxy.vscode-conventional-commits",
 			"eamodio.gitlens",
 			"github.vscode-github-actions",
+			"gruntfuggly.todo-tree"
 		],
 	},
 }
