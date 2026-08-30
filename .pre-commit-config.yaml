@@ -27,9 +27,9 @@ repos:
         types_or: [ python, pyi ]
         stages: [ pre-push ]
       # Run tests
-      # - id: tests
-      #   name: run tests
-      #   entry: pytest -v
-      #   language: system
-      #   types: [ python ]
-      #   stages: [ pre-push ]
+      - id: tests
+        name: run tests
+        entry: uv run pytest -v
+        language: system
+        types: [ python ]
+        stages: [ pre-push ]
