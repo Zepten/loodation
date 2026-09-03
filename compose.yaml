@@ -11,6 +11,8 @@ networks:
 services:
   db:
     image: postgres:18-alpine
+    env_file:
+      - .env
     environment:
       - POSTGRES_DB=${DB__NAME:?error}
       - POSTGRES_USER=${DB__USERNAME:?error}
@@ -18,7 +20,7 @@ services:
     ports:
       - "127.0.0.1:${DB__PORT}:5432"
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 5s
@@ -34,10 +36,8 @@ services:
 
   redis:
     image: redis:8.6-alpine
-    # environment:
-    #   - REDIS_PASSWORD=${REDIS__PASSWORD:?error}
-    #   - REDIS_USER=${REDIS__USERNAME:?error}
-    #   - REDIS_USER_PASSWORD=${REDIS__PASSWORD:?error}
+    env_file:
+      - .env
     ports:
       - "127.0.0.1:${REDIS__PORT}:6379"
     volumes:
@@ -70,42 +70,31 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    environment:
-      - UV_PROJECT_ENVIRONMENT=/opt/venv
-      - ENVIRONMENT=${ENVIRONMENT:?error}
-      - LOGGING__LEVEL=${LOGGING__LEVEL:?error}
-      - DB__HOST=${DB__HOST:?error}
-      - DB__PORT=${DB__PORT:?error}
-      - DB__USERNAME=${DB__USERNAME:?error}
-      - DB__PASSWORD=${DB__PASSWORD:?error}
-      - DB__NAME=${DB__NAME:?error}
-      - DB__ECHO=${DB__ECHO:?error}
-      - DB__ECHO_POOL=${DB__ECHO_POOL:?error}
-      - DB__POOL_SIZE=${DB__POOL_SIZE:?error}
-      - DB__MAX_OVERFLOW=${DB__MAX_OVERFLOW:?error}
-      - DB__POOL_PRE_PING=${DB__POOL_PRE_PING:?error}
-      - REDIS__HOST=${REDIS__HOST:?error}
-      - REDIS__PORT=${REDIS__PORT:?error}
-      - REDIS__USERNAME=${REDIS__USERNAME:?error}
-      - REDIS__PASSWORD=${REDIS__PASSWORD:?error}
-      - REDIS__DB=${REDIS__DB:?error}
-      - TELEGRAM_MINIAPP__HOST=${TELEGRAM_MINIAPP__HOST:?error}
-      - TELEGRAM_MINIAPP__PORT=${TELEGRAM_MINIAPP__PORT:?error}
-    # develop:
-    #   watch:
-    #     - action: sync
-    #       path: ./loodation-api
-    #       target: /app/src
-    #       ignore:
-    #         - "**/__pycache__/**"
-    #         - "**/.venv/**"
-    #     - action: rebuild
-    #       path: ./loodation-api/docker
+    env_file:
+      - .env
     ports:
       - "127.0.0.1:${API__PORT}:8000"
       - "127.0.0.1:${API__DEBUG_PORT}:8001"
     volumes:
       - ./loodation-api/src:/app/src
+    command:
+      - python
+      - -Xfrozen_modules=off
+      - -m
+      - debugpy
+      - --listen
+      - 0.0.0.0:8001
+      - --configure-subProcess
+      - "true"
+      - /app/.venv/bin/uvicorn
+      - loodation.main:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --reload
+      - --reload-dir
+      - /app/src
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/healthcheck"]
       interval: 60s

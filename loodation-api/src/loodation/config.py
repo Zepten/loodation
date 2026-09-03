@@ -4,6 +4,7 @@ from functools import cached_property
 
 from pydantic import (
     BaseModel,
+    Field,
     HttpUrl,
     PostgresDsn,
     RedisDsn,
@@ -73,10 +74,10 @@ class DbSettings(BaseModel):
 
 class RedisSettings(BaseModel):
     host: str = "redis_host"
-    port: int = 6380
+    port: int = Field(default=6380, ge=0, le=65535)
     username: str = "redis_user"
     password: SecretStr = SecretStr("redis_password")
-    db: int = 0
+    db: int = Field(default=0, ge=0, le=15)
 
     @computed_field
     @cached_property
@@ -89,11 +90,6 @@ class RedisSettings(BaseModel):
             port=self.port,
             path=str(self.db),
         )
-
-
-class ApiSettings(BaseModel):
-    host: str = "127.0.0.1"
-    port: int = 8000
 
 
 class TelegramMiniappSettings(BaseModel):
@@ -112,18 +108,17 @@ class Settings(BaseSettings):
     logging: LoggingSettings = LoggingSettings()
     db: DbSettings = DbSettings()
     redis: RedisSettings = RedisSettings()
-    api: ApiSettings = ApiSettings()
     telegram_miniapp: TelegramMiniappSettings = TelegramMiniappSettings()
 
     @computed_field
     @cached_property
-    def is_auto_reload(self) -> bool:
-        return settings.environment is Environment.DEV
+    def is_debug(self) -> bool:
+        return self.environment is Environment.DEV
 
     @computed_field
     @cached_property
     def is_show_docs(self) -> bool:
-        return settings.environment is Environment.DEV
+        return self.environment is Environment.DEV
 
     @computed_field
     @cached_property
@@ -145,4 +140,7 @@ def configure_logging() -> None:
 
 settings = Settings()
 configure_logging()
-logger.debug(f"Application settings: {settings}")
+
+if settings.environment is Environment.DEV:
+    logger.info("Running in development environment")
+    logger.debug(f"Application settings: {settings}")

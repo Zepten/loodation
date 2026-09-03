@@ -1,7 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
 
-import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -46,16 +45,3 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
-
-
-def run() -> None:
-    uvicorn.run(
-        "loodation.main:app",
-        host=settings.api.host,
-        port=settings.api.port,
-        reload=settings.is_auto_reload,
-    )
-
-
-if __name__ == "__main__":
-    run()

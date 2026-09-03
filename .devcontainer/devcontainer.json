@@ -3,7 +3,8 @@
 {
 	"name": "loodation-dev",
 	"runArgs": ["--name", "loodation-dev", "--network", "loodation-network"],
-	"workspaceFolder": "/workspaces/loodation",
+	"workspaceFolder": "${localWorkspaceFolder}",
+	"workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
@@ -13,7 +14,7 @@
 		}
 	},
 	"mounts": [
-		"source=loodation-api-venv,target=/workspaces/loodation/loodation-api/.venv,type=volume"
+		"source=loodation-api-venv,target=${localWorkspaceFolder}/loodation-api/.venv,type=volume"
 	],
 	"postCreateCommand": "chmod +x ./scripts/* && ./scripts/setup-dev-env.sh",
 	"remoteUser": "vscode",

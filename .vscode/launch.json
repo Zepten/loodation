@@ -5,8 +5,16 @@
 			"name": "Debug API",
 			"type": "debugpy",
 			"request": "attach",
-			"connect": { "host": "localhost", "port": 8001 },
-			"pathMappings": [{ "localRoot": "${workspaceFolder}/loodation-api", "remoteRoot": "." }]
+			"connect": {
+				"host": "api",
+				"port": 8001
+			},
+			"pathMappings": [
+				{
+					"localRoot": "${workspaceFolder}/loodation-api",
+					"remoteRoot": "/app"
+				}
+			]
 		},
 	]
 }
