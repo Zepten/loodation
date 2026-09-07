@@ -1,11 +1,13 @@
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from loodation.api import api_router
 from loodation.config import settings
+from loodation.exceptions import BusinessError, BusinessErrorResponse
 from loodation.rate_limiter import limiter
 
 logger = logging.getLogger(__name__)
@@ -16,9 +18,9 @@ async def lifespan(app: FastAPI):
     # startup
     yield
     # shutdown
-    logger.info("Lifespan for FastAPI app is ended")
+    logger.debug("Lifespan for FastAPI app is ended.")
     # await db_helper.dispose() # TODO: lifespan for DB
-    logger.info("Database engine disposed")
+    logger.debug("Database engine disposed.")
 
 
 app = FastAPI(
@@ -45,3 +47,15 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
+
+
+@app.exception_handler(BusinessError)
+async def business_logic_error_handler(
+    _: Request,
+    exc: BusinessError,
+) -> JSONResponse:
+    response = BusinessErrorResponse(name=exc.name, message=exc.message)
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=response.model_dump(),
+    )

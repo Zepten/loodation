@@ -10,6 +10,7 @@ from pydantic import (
     RedisDsn,
     SecretStr,
     computed_field,
+    model_validator,
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -34,10 +35,11 @@ class LoggingSettings(BaseModel):
     @computed_field
     @cached_property
     def format(self) -> str:
-        if self.level is LoggingLevel.DEBUG:
-            return "%(asctime)s [%(levelname)s] %(message)s [%(name)s.%(funcName)s:%(lineno)d]"
-        else:
-            return "%(asctime)s [%(levelname)s] %(message)s [%(name)s.%(funcName)s:%(lineno)d]"  # TODO
+        match self.level:
+            case LoggingLevel.DEBUG:
+                return "%(asctime)s [%(levelname)s] %(message)s [%(name)s.%(funcName)s:%(lineno)d]"
+            case _:  # TODO: make formats for other format levels
+                return "%(asctime)s [%(levelname)s] %(message)s [%(name)s.%(funcName)s:%(lineno)d]"
 
 
 class DbSettings(BaseModel):
@@ -92,6 +94,18 @@ class RedisSettings(BaseModel):
         )
 
 
+class PaginatorSettings(BaseModel):
+    max_limit: int = Field(default=100, ge=1)
+    default_limit: int = Field(default=20, ge=1)
+
+    @model_validator(mode="after")
+    def validate_limits(self) -> "PaginatorSettings":
+        if self.default_limit > self.max_limit:
+            raise ValueError("default_limit cannot be greater than max_limit")
+
+        return self
+
+
 class TelegramMiniappSettings(BaseModel):
     host: str = "miniapp"
     port: int = 8001
@@ -108,6 +122,7 @@ class Settings(BaseSettings):
     logging: LoggingSettings = LoggingSettings()
     db: DbSettings = DbSettings()
     redis: RedisSettings = RedisSettings()
+    paginator: PaginatorSettings = PaginatorSettings()
     telegram_miniapp: TelegramMiniappSettings = TelegramMiniappSettings()
 
     @computed_field
