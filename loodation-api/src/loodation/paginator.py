@@ -97,7 +97,7 @@ def create_paginator_dependency(
             int, Query(ge=1, le=settings.paginator.max_limit)
         ] = settings.paginator.default_limit,
         offset: Annotated[int, Query(ge=0)] = 0,
-        sort_by: Annotated[sorting_field, Query()] = default_sorting_field,
+        sort_by: Annotated[sorting_field, Query()] = default_sorting_field,  # type: ignore
         sort_order: Annotated[SortOrder, Query()] = SortOrder.DESC,
     ) -> PaginatorParams[SortFieldsT]:
         return PaginatorParams(
