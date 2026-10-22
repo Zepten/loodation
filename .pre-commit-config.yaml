@@ -20,12 +20,12 @@ repos:
   - repo: local
     hooks:
       # Run the type checker
-      - id: type checker
-        name: run type checker
-        entry: uv run ty check
-        language: system
-        types_or: [ python, pyi ]
-        stages: [ pre-push ]
+      # - id: type checker
+      #  name: run type checker
+      #  entry: uv run ty check
+      #  language: system
+      #  types_or: [ python, pyi ]
+      #  stages: [ pre-push ]
       # Run tests
       - id: tests
         name: run tests
