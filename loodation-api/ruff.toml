@@ -1,4 +1,4 @@
-line-length = 88
+line-length = 100
 
 [lint]
 select = [
@@ -16,7 +16,7 @@ ignore = [
 ]
 fixable = ["A", "B", "C", "D", "E", "F", "I"]
 unfixable = [
-    "F401" # remove unused imports
+    # "F401" # remove unused imports
 ]
 
 [format]

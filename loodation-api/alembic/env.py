@@ -6,12 +6,13 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from loodation.config import settings
-from loodation.database import Base  # noqa
+from loodation.core.config import settings
+from loodation.core.database import Base  # noqa
 
 
 def import_models() -> None:
     from loodation.auth.models import User  # noqa
+    from loodation.ledger.models import Transaction  # noqa
 
 
 import_models()

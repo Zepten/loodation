@@ -78,7 +78,7 @@
 			"vivaxy.vscode-conventional-commits",
 			"eamodio.gitlens",
 			"github.vscode-github-actions",
-			"gruntfuggly.todo-tree"
+			"FanaticPythoner.better-todo-tree"
 		],
 	},
 }

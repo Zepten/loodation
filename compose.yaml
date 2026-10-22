@@ -67,6 +67,9 @@ services:
     build:
       context: ./loodation-api
       dockerfile: ./docker/Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
     depends_on:
       db:
         condition: service_healthy
@@ -76,7 +79,7 @@ services:
       - "127.0.0.1:${API__PORT}:8000"
       - "127.0.0.1:${API__DEBUG_PORT}:8001"
     volumes:
-      - ./loodation-api/src:/app/src
+      - ./loodation-api:/app:Z
     command:
       - python
       - -Xfrozen_modules=off
@@ -86,7 +89,8 @@ services:
       - 0.0.0.0:8001
       - --configure-subProcess
       - "true"
-      - /app/.venv/bin/uvicorn
+      - -m
+      - uvicorn
       - loodation.main:app
       - --host
       - 0.0.0.0

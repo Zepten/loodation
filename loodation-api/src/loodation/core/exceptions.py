@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import status
 from pydantic import BaseModel
 
@@ -16,12 +18,14 @@ class BusinessError(Exception):
     """
 
     message: str
-    name: str = "business_error"
+    code: str = "business_error"
     status_code: int = status.HTTP_400_BAD_REQUEST
+    extra: dict[str, Any] | None = None
 
-    def __init__(self, message: str) -> None:
+    def __init__(self, message: str, extra: dict[str, Any] | None = None) -> None:
         super().__init__(message)
         self.message = message
+        self.extra = extra
 
 
 class BusinessErrorResponse(BaseModel):
@@ -29,3 +33,4 @@ class BusinessErrorResponse(BaseModel):
 
     name: str
     message: str
+    extra: dict[str, Any] | None = None

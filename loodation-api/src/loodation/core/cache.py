@@ -1,6 +1,6 @@
 from redis import Redis
 
-from loodation.config import settings
+from loodation.core.config import settings
 
 cache = Redis(
     host=settings.redis.host,

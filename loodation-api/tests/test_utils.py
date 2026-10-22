@@ -1,6 +1,6 @@
 import pytest
 
-from loodation.utils import camel_to_snake
+from loodation.core.utils import camel_to_snake
 
 
 @pytest.mark.parametrize(

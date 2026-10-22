@@ -11,8 +11,8 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase, declared_attr
 
-from loodation.config import settings
-from loodation.utils import camel_to_snake
+from loodation.core.config import settings
+from loodation.core.utils import camel_to_snake
 
 db_engine = create_async_engine(
     url=str(settings.db.url),
@@ -48,5 +48,5 @@ class Base(AsyncAttrs, DeclarativeBase):
     def __tablename__(cls) -> str:
         return f"{camel_to_snake(cls.__name__)}s"
 
-    def dict(self):
+    def dict(self) -> dict:
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

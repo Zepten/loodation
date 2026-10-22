@@ -1,7 +1,8 @@
-import logging
+import sys
 from enum import StrEnum
 from functools import cached_property
 
+from loguru import logger
 from pydantic import (
     BaseModel,
     Field,
@@ -13,8 +14,6 @@ from pydantic import (
     model_validator,
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-logger = logging.getLogger(__name__)
 
 
 class Environment(StrEnum):
@@ -101,7 +100,7 @@ class PaginatorSettings(BaseModel):
     @model_validator(mode="after")
     def validate_limits(self) -> "PaginatorSettings":
         if self.default_limit > self.max_limit:
-            raise ValueError("default_limit cannot be greater than max_limit")
+            raise ValueError("default_limit cannot be greater than max_limit.")
 
         return self
 
@@ -148,14 +147,12 @@ class Settings(BaseSettings):
 
 
 def configure_logging() -> None:
-    logging.basicConfig(
-        level=settings.logging.level.upper(), format=settings.logging.format
-    )
+    logger.remove(0)
+    logger.add(sys.stderr, level=settings.logging.level.upper())
+    # logger.basicConfig(level=settings.logging.level.upper(), format=settings.logging.format)
 
 
 settings = Settings()
 configure_logging()
 
-if settings.environment is Environment.DEV:
-    logger.info("Running in development environment")
-    logger.debug(f"Application settings: {settings}")
+logger.info(f"Running in {settings.environment.upper()} environment.")

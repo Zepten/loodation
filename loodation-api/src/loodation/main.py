@@ -1,16 +1,14 @@
-import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from loguru import logger
 
 from loodation.api import api_router
-from loodation.config import settings
-from loodation.exceptions import BusinessError, BusinessErrorResponse
-from loodation.rate_limiter import limiter
-
-logger = logging.getLogger(__name__)
+from loodation.core.config import settings
+from loodation.core.exceptions import BusinessError, BusinessErrorResponse
+from loodation.core.rate_limiter import limiter
 
 
 @asynccontextmanager
@@ -33,9 +31,7 @@ app = FastAPI(
 )
 app.docs_url = "/docs" if settings.is_show_docs else None
 app.openapi_url = "/openapi.json" if settings.is_show_docs else None
-app.swagger_ui_oauth2_redirect_url = (
-    "/docs/oauth2-redirect" if settings.is_show_docs else None
-)
+app.swagger_ui_oauth2_redirect_url = "/docs/oauth2-redirect" if settings.is_show_docs else None
 app.state.limiter = limiter
 
 app.add_middleware(
@@ -54,7 +50,7 @@ async def business_logic_error_handler(
     _: Request,
     exc: BusinessError,
 ) -> JSONResponse:
-    response = BusinessErrorResponse(name=exc.name, message=exc.message)
+    response = BusinessErrorResponse(name=exc.code, message=exc.message)
     return JSONResponse(
         status_code=exc.status_code,
         content=response.model_dump(),
