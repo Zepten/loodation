@@ -1,0 +1,9 @@
+name: loodation-miniapp-demo
+
+services:
+  miniapp:
+    build:
+      context: ./loodation-miniapp
+    ports:
+      - "127.0.0.1:${MINIAPP_PORT:-8002}:80"
+    restart: unless-stopped
