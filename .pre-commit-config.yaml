@@ -22,14 +22,14 @@ repos:
       # Run the type checker
       - id: type checker
         name: run type checker
-        entry: uv run ty check
+        entry: uv run --project ./loodation-api ty check
         language: system
         types_or: [ python, pyi ]
         stages: [ pre-push ]
       # Run tests
       - id: tests
         name: run tests
-        entry: uv run pytest -v
+        entry: uv run --project ./loodation-api pytest -v
         language: system
         types: [ python ]
         stages: [ pre-push ]
